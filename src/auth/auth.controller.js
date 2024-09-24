@@ -23,11 +23,19 @@ authRouter.post("/register", validate(registerValidator), async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    await AuthService.createUser(name, email, password);
+    const user = await AuthService.findUserByEmail(email);
+    if (user)
+      return res.status(400).send({
+        ok: false,
+        message: `User with email: ${email}, already exists`,
+      });
+
+    const newUser = await AuthService.createUser(name, email, password);
 
     res.status(201).send({
       ok: true,
       message: "User created successfully",
+      user: newUser,
     });
   } catch (error) {
     console.error(error);
