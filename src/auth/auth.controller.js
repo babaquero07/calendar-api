@@ -29,9 +29,14 @@ authRouter.post("/", validate(loginValidator), async (req, res) => {
         message: "Invalid password",
       });
 
+    const token = await AuthService.generateJWT(user._id, user.name);
+
     res.send({
       ok: true,
       message: "User logged in successfully",
+      uid: user._id,
+      name: user.name,
+      token,
     });
   } catch (error) {
     console.error(error);

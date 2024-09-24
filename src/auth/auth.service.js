@@ -1,10 +1,12 @@
 import { User } from "./models/User.js";
 import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export class AuthService {
-  constructor(User, bcryptjs) {
+  constructor(User, bcryptjs, jwt) {
     this.User = User;
     this.bcryptjs = bcryptjs;
+    this.jwt = jwt;
   }
 
   static async findUserByEmail(email) {
@@ -33,6 +35,26 @@ export class AuthService {
 
   static isPasswordValid(password, userPassword) {
     return bcryptjs.compare(password, userPassword);
+  }
+
+  static async generateJWT(uid, name) {
+    const token = await new Promise((resolve, reject) => {
+      const payload = { uid, name };
+
+      jwt.sign(
+        payload,
+        process.env.JWT_SECRET,
+        { expiresIn: "2h" },
+        (err, token) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(token);
+        }
+      );
+    });
+
+    return token;
   }
 
   static async login() {
