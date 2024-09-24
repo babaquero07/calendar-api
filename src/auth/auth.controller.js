@@ -2,8 +2,8 @@ import { Router } from "express";
 import {
   loginValidator,
   registerValidator,
-} from "./middleware/auth-validator.js";
-import { validate } from "../common/middleware/validator.js";
+} from "./middlewares/auth-validator.js";
+import { validate } from "../common/middlewares/validator.js";
 
 export const authRouter = Router();
 
