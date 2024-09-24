@@ -5,6 +5,7 @@ import {
 } from "./middlewares/auth-validator.js";
 import { validate } from "../common/middlewares/validator.js";
 import { AuthService } from "./auth.service.js";
+import { validateJWT } from "./middlewares/validate-jwt.js";
 
 export const authRouter = Router();
 
@@ -76,4 +77,23 @@ authRouter.post("/register", validate(registerValidator), async (req, res) => {
   }
 });
 
-authRouter.get("/renew", (req, res) => {});
+authRouter.get("/renew", validateJWT, async (req, res) => {
+  try {
+    const { uid, name } = req.jwtData;
+
+    const token = await AuthService.generateJWT(uid, name);
+
+    res.send({
+      ok: true,
+      message: "Token renewed successfully",
+      token,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).send({
+      ok: false,
+      message: "Internal server error",
+    });
+  }
+});
