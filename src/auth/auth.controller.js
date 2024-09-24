@@ -2,9 +2,13 @@ import { Router } from "express";
 
 export const authRouter = Router();
 
-authRouter.get("/", (req, res) => {
+authRouter.post("/", (req, res) => {});
+
+authRouter.post("/register", (req, res) => {
   res.send({
     ok: true,
-    message: "Auth route",
+    message: "register route",
   });
 });
+
+authRouter.get("/renew", (req, res) => {});
