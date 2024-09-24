@@ -30,4 +30,15 @@ export class AuthService {
       throw new Error(`Error creating user: ${error.message}`);
     }
   }
+
+  static isPasswordValid(password, userPassword) {
+    return bcryptjs.compare(password, userPassword);
+  }
+
+  static async login() {
+    try {
+    } catch (error) {
+      throw new Error(`Error logging in: ${error.message}`);
+    }
+  }
 }
