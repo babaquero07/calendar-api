@@ -34,4 +34,31 @@ export class EventsService {
       throw new Error("Error getting events");
     }
   }
+
+  static async getEventById(id) {
+    try {
+      const event = await Event.findById(id).populate("user", "name email");
+
+      return event;
+    } catch (error) {
+      console.error(error);
+
+      throw new Error("Error getting event by id");
+    }
+  }
+
+  static async updateEvent(id, data) {
+    try {
+      const event = await Event.findByIdAndUpdate(id, data).populate(
+        "user",
+        "name email"
+      );
+
+      return event;
+    } catch (error) {
+      console.error(error);
+
+      throw new Error("Error updating event");
+    }
+  }
 }

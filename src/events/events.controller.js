@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { EventsService } from "./events.service.js";
 import { validate } from "../common/middlewares/validator.js";
-import { newEventValidator } from "./middlewares/events-validator.js";
+import {
+  newEventValidator,
+  updateEventValidator,
+} from "./middlewares/events-validator.js";
 
 export const eventsRouter = Router();
 
@@ -51,8 +54,25 @@ eventsRouter.post("/", validate(newEventValidator), async (req, res) => {
   }
 });
 
-eventsRouter.put("/:id", async (req, res) => {
+eventsRouter.put("/:id", validate(updateEventValidator), async (req, res) => {
   try {
+    const { id } = req.params;
+    const { ...data } = req.body;
+
+    const event = await EventsService.getEventById(id);
+    if (!event)
+      return res.status(404).json({
+        ok: false,
+        msg: "Event not found",
+      });
+
+    const updatedEvent = await EventsService.updateEvent(id, data);
+
+    res.json({
+      ok: true,
+      message: "Event updated",
+      updatedEvent,
+    });
   } catch (error) {
     console.error(error);
 
