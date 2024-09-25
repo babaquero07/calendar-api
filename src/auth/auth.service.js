@@ -9,6 +9,18 @@ export class AuthService {
     this.jwt = jwt;
   }
 
+  static async getUserById(id) {
+    try {
+      const user = await User.findById(id);
+
+      return user;
+    } catch (error) {
+      console.error(error);
+
+      throw new Error(`Error finding user by id: ${error.message}`);
+    }
+  }
+
   static async findUserByEmail(email) {
     try {
       const user = await User.findOne({ email });
