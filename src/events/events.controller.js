@@ -57,6 +57,7 @@ eventsRouter.post("/", validate(newEventValidator), async (req, res) => {
 eventsRouter.put("/:id", validate(updateEventValidator), async (req, res) => {
   try {
     const { id } = req.params;
+    const { uid } = req.jwtData;
     const { ...data } = req.body;
 
     const event = await EventsService.getEventById(id);
@@ -64,6 +65,12 @@ eventsRouter.put("/:id", validate(updateEventValidator), async (req, res) => {
       return res.status(404).json({
         ok: false,
         msg: "Event not found",
+      });
+
+    if (event.user._id.toString() !== uid)
+      return res.status(401).json({
+        ok: false,
+        msg: "You don't have permissions to update this event",
       });
 
     const updatedEvent = await EventsService.updateEvent(id, data);
