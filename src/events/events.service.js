@@ -22,4 +22,16 @@ export class EventsService {
       throw new Error("Error creating event");
     }
   }
+
+  static async getEvents() {
+    try {
+      const events = await Event.find().populate("user", "name email");
+
+      return events;
+    } catch (error) {
+      console.error(error);
+
+      throw new Error("Error getting events");
+    }
+  }
 }

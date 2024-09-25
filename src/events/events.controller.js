@@ -7,6 +7,12 @@ export const eventsRouter = Router();
 
 eventsRouter.get("/", async (req, res) => {
   try {
+    const events = await EventsService.getEvents();
+
+    res.json({
+      ok: true,
+      events,
+    });
   } catch (error) {
     console.error(error);
 
