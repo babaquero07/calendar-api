@@ -86,6 +86,8 @@ authRouter.get("/renew", validateJWT, async (req, res) => {
     res.send({
       ok: true,
       message: "Token renewed successfully",
+      uid,
+      name,
       token,
     });
   } catch (error) {
