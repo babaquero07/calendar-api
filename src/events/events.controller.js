@@ -2,6 +2,7 @@ import { Router } from "express";
 import { EventsService } from "./events.service.js";
 import { validate } from "../common/middlewares/validator.js";
 import {
+  idValidator,
   newEventValidator,
   updateEventValidator,
 } from "./middlewares/events-validator.js";
@@ -90,8 +91,30 @@ eventsRouter.put("/:id", validate(updateEventValidator), async (req, res) => {
   }
 });
 
-eventsRouter.delete("/:id", async (req, res) => {
+eventsRouter.delete("/:id", validate([idValidator]), async (req, res) => {
   try {
+    const { id } = req.params;
+    const { uid } = req.jwtData;
+
+    const event = await EventsService.getEventById(id);
+    if (!event)
+      return res.status(404).json({
+        ok: false,
+        msg: "Event not found",
+      });
+
+    if (event.user._id.toString() !== uid)
+      return res.status(401).json({
+        ok: false,
+        msg: "You don't have permissions to delete this event",
+      });
+
+    await EventsService.deleteEvent(id);
+
+    res.json({
+      ok: true,
+      message: "Event deleted",
+    });
   } catch (error) {
     console.error(error);
 

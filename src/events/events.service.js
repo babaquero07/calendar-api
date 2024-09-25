@@ -61,4 +61,16 @@ export class EventsService {
       throw new Error("Error updating event");
     }
   }
+
+  static async deleteEvent(id) {
+    try {
+      const event = await Event.findByIdAndDelete(id);
+
+      return event;
+    } catch (error) {
+      console.error(error);
+
+      throw new Error("Error deleting event");
+    }
+  }
 }
